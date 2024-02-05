@@ -1,15 +1,26 @@
 #pragma once
-#include "position.h"
+#include"Position.h"
 
-#include<vector>
 #include<set>
 
+using std::set;
 
-typedef std::set<position_t> parametrized_state_t;
-parametrized_state_t empty_parametrized_state = parametrized_state_t();
-
-class ParametrizedState {
+class ParametrizedState
+{
 public:
-	static vector<position_t> generate_next_candidates(unsigned tolerance, const parametrized_state_t& parametrized_state);
-	static vector<parametrized_state_t> generate_parametrized_states(unsigned tolerance);
+	static const std::set<Position> empty_parametrized_state;
+	std::set<Position> container;
+
+	ParametrizedState(set<Position> _positions = set<Position>());
+
+	static vector<ParametrizedState> generate_from_tolerance(int tolerance);
+
+	bool operator==(const ParametrizedState& other) const;
+
+	string to_string() const;
+	friend ostream& operator<<(ostream& out, const ParametrizedState& parametrized_state);
+	
+private:
+	vector<Position> generate_next_positions(int tolerance) const;
 };
+

@@ -1,61 +1,35 @@
-#include"ParametrizedState.h"
+#include "ParametrizedState.h"
 
-using std::vector;
-using std::set;
+ParametrizedState::ParametrizedState(set<Position> _positions): container(_positions){}
 
-vector<position_t> ParametrizedState::generate_next_candidates(unsigned tolerance, const parametrized_state_t& parametrized_state) {
-	position_t base = *(parametrized_state.begin());
-	position_t back = *(--parametrized_state.end());
+vector<ParametrizedState> ParametrizedState::generate_from_tolerance(int tolerance)
+{
+	vector<ParametrizedState> result;
 
-	vector<position_t> result;
+	vector<ParametrizedState> newly_generated;
+	vector<ParametrizedState> previously_generated;
+	ParametrizedState new_positions;
 
-	int i0 = base.i + base.e;
-	int e0 = 0;
-
-	if (back != base) {
-		e0 = back.e + 1;
-
-		for (int j = back.i + 1; i0 + back.e + 1; ++j) {
-			result.push_back({ j, back.e });
-		}
-	}
-
-	for (int f = e0; f < tolerance + 1; ++f) {
-		for (int j = i0 - f; j < i0 + f + 1; ++j) {
-			result.push_back({ j, f });
-		}
-	}
-
-	return result;
-}
-
-vector<parametrized_state_t> ParametrizedState::generate_parametrized_states(unsigned tolerance) {
-	vector<parametrized_state_t> result;
-
-	vector<parametrized_state_t> newly_generated;
-	vector<parametrized_state_t> previously_generated;
-	parametrized_state_t new_positions;
-
-	for (int i = 0; i < tolerance + 1; ++i) {
-		newly_generated.push_back({ position_t(0, i) });
+	for (int e = 0; e < tolerance + 1; ++e) {
+		newly_generated.push_back(ParametrizedState({ Position(e, 0) }));
 	}
 
 	while (!newly_generated.empty()) {
 
-		for (const parametrized_state_t& paramaterized_state : newly_generated) {
+		for (const ParametrizedState& paramaterized_state : newly_generated) {
 			result.push_back(paramaterized_state);
 		}
 
 		previously_generated = newly_generated;
 		newly_generated.clear();
 
-		for (const parametrized_state_t& positions : previously_generated) {
-			vector<position_t> candidates = generate_next_candidates(tolerance, positions);
+		for (const ParametrizedState& positions : previously_generated) {
+			vector<Position> candidates = positions.generate_next_positions(tolerance);
 
-			for (position_t c : candidates) {
+			for (const Position& c : candidates) {
 
 				bool is_valid = true;
-				for (const position_t& p : positions) {
+				for (const Position& p : positions.container) {
 					if (c.subsumes(p) || p.subsumes(c)) {
 						is_valid = false;
 						break;
@@ -64,13 +38,63 @@ vector<parametrized_state_t> ParametrizedState::generate_parametrized_states(uns
 
 				if (is_valid) {
 					new_positions = positions;
-					new_positions.insert(c);
+					new_positions.container.insert(c);
 
 					newly_generated.push_back(new_positions);
 				}
 			}
 		}
-
-		return result;
 	}
+	return result;
+}
+
+bool ParametrizedState::operator==(const ParametrizedState& other) const
+{
+	return(this->container == other.container);
+}
+
+string ParametrizedState::to_string() const
+{
+	string result = "{ ";
+	for (const Position& pos : container) {
+		result += (pos.to_string() + ", ");
+	}
+
+	result += "}";
+
+	return result;
+}
+
+vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
+{
+	Position base = *(container.begin());
+	Position back = *(--container.end());
+
+	vector<Position> result;
+
+	int i0 = base.e + base.i;
+	int e0 = 0;
+
+	if (back != base) {
+		e0 = back.e + 1;
+
+		for (int j = back.i + 1; j < i0 + back.e + 1; ++j) {
+			result.push_back({ back.e, j });
+		}
+	}
+
+	for (int f = e0; f < tolerance + 1; ++f) {
+		for (int j = i0 - f; j < i0 + f + 1; ++j) {
+			result.push_back({ f, j });
+		}
+	}
+
+	return result;
+}
+
+
+ostream& operator<<(ostream& out, const ParametrizedState& parametrized_state)
+{
+	out << parametrized_state.to_string() << "\n";
+	return out;
 }
