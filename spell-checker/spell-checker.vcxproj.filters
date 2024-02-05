@@ -18,16 +18,13 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="TestPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="position.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="Position.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="position.cpp">
+    <ClCompile Include="TestParametrizedState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParametrizedState.cpp">
@@ -35,6 +32,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Position.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ParametrizedState.h">
       <Filter>Header Files</Filter>
     </ClInclude>

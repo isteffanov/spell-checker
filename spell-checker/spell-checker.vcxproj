@@ -129,13 +129,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ParametrizedState.cpp" />
-    <ClCompile Include="position.cpp" />
-    <ClCompile Include="position.h" />
-    <ClCompile Include="test.cpp" />
-    <ClCompile Include="test.h" />
+    <ClCompile Include="Position.cpp" />
+    <ClCompile Include="TestParametrizedState.cpp" />
+    <ClCompile Include="TestPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ParametrizedState.h" />
+    <ClInclude Include="Position.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
