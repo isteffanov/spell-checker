@@ -57,6 +57,18 @@ bool Position::operator<(const Position& rhs) const
 	return false;
 }
 
+bool Position::inverse_less_than(const Position& rhs) const
+{
+	if (this->e < rhs.e) {
+		return true;
+	}
+	if (this->e == rhs.e && this->i < rhs.i) {
+		return true;
+	}
+
+	return false;
+}
+
 bool Position::subsumes(const Position& other) const
 {
 	return this->e <= other.e && std::abs(this->i - other.i) <= other.e - this->e;

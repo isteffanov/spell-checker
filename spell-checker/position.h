@@ -22,7 +22,8 @@ public:
 	bool operator==(const Position& other) const;
 	bool operator!=(const Position& other) const;
 	bool operator<(const Position& rhs) const;
-	
+	bool inverse_less_than(const Position& rhs) const;
+
 	bool subsumes(const Position& rhs) const;
 
 	string to_string() const;

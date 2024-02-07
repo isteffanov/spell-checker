@@ -58,3 +58,73 @@ TEST(TestGenerateParametrizedStates, WithToleranceTwo) {
 	
 	EXPECT_EQ(result, expected) << result.size() << ", " << expected.size() << "\n";
 }
+
+TEST(TestReducedUnion, KeepsPositionsSorted) {
+	ParametrizedState ps1({ Position(0, 0), Position(1, 3) });
+	ParametrizedState ps2({ Position(0, 1) });
+
+	ParametrizedState expected({ Position(0, 0), Position(0, 1), Position(1, 3) });
+	ParametrizedState result = ParametrizedState::reduced_union({ ps1, ps2 });
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestReducedUnion, RemovesSubsumedPositions) {
+
+	ParametrizedState ps1({ Position(0, 0), Position(1, 3) });
+	ParametrizedState ps2({ Position(0, 1) });
+	ParametrizedState ps3({ Position(1, 1) });
+
+	ParametrizedState expected({ Position(0, 0), Position(0, 1), Position(1, 3) });
+	ParametrizedState result = ParametrizedState::reduced_union({ ps1, ps2, ps3 });
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestReducedUnion, RemovesDublicates) {
+
+	ParametrizedState ps1({ Position(1, 0), Position(1, 1) });
+	ParametrizedState ps2({ Position(1, 1), Position(1, 2)});
+
+	ParametrizedState expected({ Position(1, 0), Position(1, 1), Position(1, 2) });
+	ParametrizedState result = ParametrizedState::reduced_union({ ps1, ps2 });
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestStep, VariousTransitions1) {
+	ParametrizedState state({ Position(1, 0), Position(1, 1) });
+	ParametrizedState expected({ Position(2, 0), Position(2, 1), Position(2, 2) });
+
+	ParametrizedState result = state.step({ 0, 0, 0 }, 2);
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestStep, VariousTransitions2) {
+	ParametrizedState state({ Position(1, 0), Position(1, 1) });
+	ParametrizedState expected({ });
+
+	ParametrizedState result = state.step({ 0, 0, 0 }, 1);
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestStep, VariousTransitions3) {
+	ParametrizedState state({ Position(1, 0), Position(1, 1) });
+	ParametrizedState expected({ Position(1, 2), Position(2, 0)});
+
+	ParametrizedState result = state.step({ 0, 1, 0 }, 2);
+
+	EXPECT_EQ(result, expected);
+}
+
+TEST(TestStep, VariousTransitions4) {
+	ParametrizedState state({ Position(1, 0), Position(1, 1) });
+	ParametrizedState expected({ Position(1, 0) });
+
+	ParametrizedState result = state.step({ 1, 0, 0 }, 2);
+	result = result.subtract_min_boundary(result.get_min_boundary());
+
+	EXPECT_EQ(result, expected);
+}
