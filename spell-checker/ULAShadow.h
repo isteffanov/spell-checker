@@ -14,7 +14,7 @@ public:
 	vector<vector<ULAState>> matrix;
 	vector<int> max_i_minus_e;
 
-	ULAShadow(int tolerance);
+	ULAShadow(int tolerance = 0);
 
 	static const vector<bit_vector_t> generate_bit_vectors_from_tolerance(int tolerance);
 	static int min_boundary_from_state(const ParametrizedState& parametrized_state);

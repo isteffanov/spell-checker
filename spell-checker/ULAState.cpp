@@ -2,6 +2,11 @@
 
 ULAState::ULAState(int _id, int _min_boundary) : id(_id), min_boundary(_min_boundary) {}
 
+bool ULAState::is_empty() const
+{
+    return id == -1 || min_boundary == -1;
+}
+
 bool ULAState::operator==(const ULAState& rhs) const
 {
     return this->id == rhs.id && this->min_boundary == rhs.min_boundary;
