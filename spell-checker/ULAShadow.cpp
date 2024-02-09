@@ -19,7 +19,7 @@ ULAShadow::ULAShadow(int tolerance)
         }
     }
 
-    this->max_i_minus_e = vector<int>(states.size());
+    this->max_i_minus_e = vector<int>(states.size(), 0);
     for (int i = 0; i < states.size(); ++i) {
         ParametrizedState& state = states[i];
         if (!state.container.empty()) {
@@ -75,7 +75,7 @@ int ULAShadow::min_boundary_from_state(const ParametrizedState& parametrized_sta
 
 int ULAShadow::find_id_of_state(const vector<ParametrizedState>& states, const ParametrizedState& state)
 {
-    if (state.container == ParametrizedState::empty_parametrized_state) {
+    if (state.container.empty()) {
         return -1;
     }
 

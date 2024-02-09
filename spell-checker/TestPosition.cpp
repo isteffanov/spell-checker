@@ -27,7 +27,7 @@ TEST(TestPositionStep, WithEmptyBitVector) {
 
 TEST(TestPositionStep, WithTwoOptionsAndZerosInBitVec) {
 	Position p(0, 0);
-	std::vector<Position> expected = { Position(1, 0), Position(1, 1) };
+	std::vector<Position> expected = { Position(1, 0), Position(1, 1), Position(3, 4)};
 
 	EXPECT_EQ(p.step({ 0, 0, 0, 1 }, 3), expected);
 	EXPECT_EQ(p.step({ 0, 0, 0, 1, 1, 1 }, 3), expected);

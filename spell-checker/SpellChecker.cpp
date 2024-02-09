@@ -2,7 +2,7 @@
 
 SpellChecker::SpellChecker(
 	dictionary_t _dictionary, 
-	int _tolerance) : dictionary(_dictionary), tolerance(_tolerance + 1)
+	int _tolerance) : dictionary(_dictionary), tolerance(_tolerance)
 {
 	this->trie = TrieAutomaton(_dictionary);
 }

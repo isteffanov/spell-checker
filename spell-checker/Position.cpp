@@ -19,7 +19,7 @@ vector<Position> Position::step(bit_vector_t bit_vector, unsigned tolerance) con
 		for (int b = 1; b < bit_vector.size(); ++b) {
 			bool bit = bit_vector[b];
 			if (bit) {
-				result.push_back(Position(this->e + b + 1, this->i + b + 2));
+				result.push_back(Position(this->e + b, this->i + b + 1));
 				break;
 			}
 		}
@@ -55,6 +55,8 @@ bool Position::operator<(const Position& rhs) const
 	}
 
 	return false;
+
+	//return this->inverse_less_than(rhs);
 }
 
 bool Position::inverse_less_than(const Position& rhs) const
@@ -71,7 +73,7 @@ bool Position::inverse_less_than(const Position& rhs) const
 
 bool Position::subsumes(const Position& other) const
 {
-	return this->e <= other.e && std::abs(this->i - other.i) <= other.e - this->e;
+	return (this->e <= other.e) && (std::abs(this->i - other.i) <= other.e - this->e);
 }
 
 string Position::to_string() const

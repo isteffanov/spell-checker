@@ -1,4 +1,6 @@
 #include "ParametrizedState.h"
+#include<algorithm>
+#include<cassert>
 
 ParametrizedState::ParametrizedState(const set<Position>& _positions): container(_positions){}
 
@@ -51,13 +53,13 @@ ParametrizedState ParametrizedState::reduced_union(const vector<ParametrizedStat
 	return ParametrizedState(result_container);
 }
 
-int ParametrizedState::get_max_i_minus_e() 
+int ParametrizedState::get_max_i_minus_e()
 {
 	Position max_pos = *(this->container.begin());
 	int result = max_pos.i - max_pos.e;
 
 	for (const Position& pos : this->container) {
-		if (pos.i - pos.e < result) {
+		if (pos.i - pos.e > result) {
 			result = pos.i - pos.e;
 		}
 	}
@@ -65,12 +67,11 @@ int ParametrizedState::get_max_i_minus_e()
 	return result;
 }
 
-vector<ParametrizedState> ParametrizedState::generate_from_tolerance(int tolerance)
+vector<ParametrizedState> ParametrizedState::generate_from_tolerance(const int tolerance)
 {
 	vector<ParametrizedState> result;
 
 	vector<ParametrizedState> newly_generated;
-	vector<ParametrizedState> previously_generated;
 	ParametrizedState new_positions;
 
 	for (int e = 0; e < tolerance + 1; ++e) {
@@ -83,12 +84,11 @@ vector<ParametrizedState> ParametrizedState::generate_from_tolerance(int toleran
 			result.push_back(paramaterized_state);
 		}
 
-		previously_generated = newly_generated;
+		vector<ParametrizedState> previously_generated(newly_generated);
 		newly_generated.clear();
 
 		for (const ParametrizedState& positions : previously_generated) {
 			vector<Position> candidates = positions.generate_next_positions(tolerance);
-
 			for (const Position& c : candidates) {
 
 				bool is_valid = true;
@@ -108,12 +108,46 @@ vector<ParametrizedState> ParametrizedState::generate_from_tolerance(int toleran
 			}
 		}
 	}
+	// remove duplicates
+	//auto it = result.begin();
+	//auto el = result[result.size() - 2];
+
+	if (result.size() > 1) {
+		for (auto it = result.begin(); it != result.end() - 2; ++it) {
+			for (auto it_after = it + 1; it_after != result.end(); ++it_after) {
+				if (*it == *it_after) {
+					it_after = result.erase(it_after);
+				}
+			}
+		}
+	}
+
+	if (result.size() > 1) {
+		for (int i = 0; i < result.size() - 1; ++i) {
+			for (int j = i + 1; j < result.size(); ++j) {
+				if (result[i] == result[j]) {
+					result.erase(result.begin() + j);
+					j--;
+				}
+			}
+		}
+	}
+
+
+	//std::unique(result.begin(), result.end());
+
+
 	return result;
 }
 
 bool ParametrizedState::operator==(const ParametrizedState& other) const
 {
 	return this->container == other.container;
+}
+
+bool ParametrizedState::operator<(const ParametrizedState& other) const
+{
+	return false;
 }
 
 string ParametrizedState::to_string() const
@@ -158,8 +192,20 @@ int ParametrizedState::get_min_boundary() const
 
 vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
 {
+	assert(("Container not empty in generate_next_positions", !container.empty()));
+
+	if (container.empty()) {
+		return {};
+	}
+
+	int foo = container.size();
+
 	Position base = *(container.begin());
 	Position back = *(--container.end());
+
+	/*auto base_it = std::min_element(container.begin(), container.end());
+	auto back_it = std::max_element(container.begin(), container.end());*/
+
 
 	vector<Position> result;
 
@@ -169,14 +215,14 @@ vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
 	if (back != base) {
 		e0 = back.e + 1;
 
-		for (int j = back.i + 1; j < i0 + back.e + 1; ++j) {
-			result.push_back({ back.e, j });
+		for (int new_i = back.i + 1; new_i < i0 + back.e + 1; ++new_i) {
+			result.push_back(Position(back.e, new_i));
 		}
 	}
 
-	for (int f = e0; f < tolerance + 1; ++f) {
-		for (int j = i0 - f; j < i0 + f + 1; ++j) {
-			result.push_back({ f, j });
+	for (int new_e = e0; new_e < tolerance + 1; ++new_e) {
+		for (int new_i = i0 - new_e; new_i < i0 + new_e + 1; ++new_i) {
+			result.push_back(Position(new_e, new_i));
 		}
 	}
 

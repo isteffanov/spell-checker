@@ -67,3 +67,33 @@ TEST(TestSpellCheckerCorrectWord, WithTolerance1) {
 
 	EXPECT_EQ(result, expected);
 }
+
+TEST(TestSpellCheckerCorrectWord, WithTolerance2) {
+	dictionary_t dictionary = {
+		"car",
+		"rat",
+		"bat",
+		"carp",
+		"caterpillar",
+		"kangaroo",
+		"camel",
+		"dog",
+		"hog",
+		"snake",
+		"crow",
+		"raven",
+		"mate"
+	};
+	SpellChecker spell_checker(dictionary, 2);
+
+	vector<string> result = spell_checker.correct_word("dog");
+	vector<string> expected = { "hog", "dog"};
+
+	EXPECT_EQ(result, expected);
+
+	result = spell_checker.correct_word("cat");
+	expected = { "mate", "bat", "rat", "car", "carp" };
+
+
+	EXPECT_EQ(result, expected);
+}

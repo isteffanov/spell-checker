@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include"ParametrizedState.h"
 
-TEST(TestGenerateParametrizedStates, WithToleranceOne) {
+TEST(TestGenerateParametrizedStates, WithTolerance1) {
 	std::vector<ParametrizedState> result = ParametrizedState::generate_from_tolerance(1);
 
 	std::vector<ParametrizedState> expected = {
@@ -20,7 +20,7 @@ TEST(TestGenerateParametrizedStates, WithToleranceOne) {
 	EXPECT_EQ(result, expected);
 }
 
-TEST(TestGenerateParametrizedStates, WithToleranceTwo) {
+TEST(TestGenerateParametrizedStates, WithTolerance2) {
 	vector<ParametrizedState> result = ParametrizedState::generate_from_tolerance(2);
 	
 	vector<ParametrizedState> expected = {
@@ -56,8 +56,22 @@ TEST(TestGenerateParametrizedStates, WithToleranceTwo) {
 	    ParametrizedState({Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3), Position(2, 4)}),
 	};
 	
-	EXPECT_EQ(result, expected) << result.size() << ", " << expected.size() << "\n";
+	EXPECT_EQ(result, expected);
 }
+
+TEST(TestGenerateParametrizedStates, WithTolerance3) {
+	vector<ParametrizedState> result = ParametrizedState::generate_from_tolerance(3);
+
+	EXPECT_EQ(result.size(), 196);
+}
+
+
+TEST(TestGenerateParametrizedStates, WithTolerance4) {
+	vector<ParametrizedState> result = ParametrizedState::generate_from_tolerance(4);
+
+	EXPECT_EQ(result.size(), 1353);
+}
+
 
 TEST(TestReducedUnion, KeepsPositionsSorted) {
 	ParametrizedState ps1({ Position(0, 0), Position(1, 3) });
@@ -128,3 +142,12 @@ TEST(TestStep, VariousTransitions4) {
 
 	EXPECT_EQ(result, expected);
 }
+
+//TEST(QjMi, Guza) {
+//	ParametrizedState state({ Position(2, 0), Position(2, 4), Position(3, 2) });
+//	vector<Position> candidates = state.generate_next_positions(2);
+//	vector<Position> expected = { Position(3, 3), Position(3, 4), Position(3, 5) };
+//
+//	EXPECT_EQ(candidates, expected);
+//	
+//}
