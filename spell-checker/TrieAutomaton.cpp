@@ -1,13 +1,13 @@
 #include "TrieAutomaton.h"
 
-TrieAutomaton::TrieAutomaton(dictionary_t dictionary, alphabet_t alphabet)
+TrieAutomaton::TrieAutomaton(const dictionary_t& dictionary, alphabet_t alphabet)
 {
 	for (const string& word : dictionary) {
 		this->add_word(word, alphabet);
 	}
 }
 
-const node_t& TrieAutomaton::step(const node_t node, char symbol) const
+const node_t& TrieAutomaton::step(const node_t& node, char symbol) const
 {
 	return this->transitions[node].at(symbol);
 }
@@ -82,7 +82,7 @@ bool TrieAutomaton::is_final(const node_t& node)
 	return this->final_nodes[node];
 }
 
-alphabet_t TrieAutomaton::get_node_alphabet(const node_t& node)
+const alphabet_t TrieAutomaton::get_node_alphabet(const node_t& node)
 {
 	alphabet_t node_alphabet;
 
@@ -93,7 +93,7 @@ alphabet_t TrieAutomaton::get_node_alphabet(const node_t& node)
 	return node_alphabet;
 }
 
-node_t TrieAutomaton::get_child_node(const node_t node, char symbol)
+const node_t& TrieAutomaton::get_child_node(const node_t& node, char symbol)
 {
 	return this->transitions[node].at(symbol);
 }

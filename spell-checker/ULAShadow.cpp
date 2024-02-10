@@ -1,34 +1,43 @@
 #include "ULAShadow.h"
+#include<iostream>
 
-ULAShadow::ULAShadow(int tolerance)
+ULAShadow::ULAShadow(const int tolerance)
 {
-    this->bit_vectors = generate_bit_vectors_from_tolerance(2 * tolerance + 1);
-    vector<ParametrizedState> states = ParametrizedState::generate_from_tolerance(tolerance);
+    
+    std::cout << "... constructing shadow ..." << std::endl;
 
-    this->matrix = vector<vector<ULAState>>(states.size(), vector<ULAState>(bit_vectors.size()));
+    this->bit_vectors = generate_bit_vectors_from_length(2 * tolerance + 1);
+    vector<ParametricState> states = ParametricState::generate_from_tolerance(tolerance);
+
+    this->ula_states = vector<vector<ULAState>>(states.size(), vector<ULAState>(bit_vectors.size()));
     for (int i = 0; i < states.size(); ++i) {
-        const ParametrizedState& state = states[i];
+        const ParametricState& state = states[i];
 
         for (int j = 0; j < bit_vectors.size(); ++j) {
             const bit_vector_t& bit_vector = bit_vectors[j];
-            ParametrizedState next_state = state.step(bit_vector, tolerance);
+            ParametricState next_state = state.step(bit_vector, tolerance);
             int min_boundary = min_boundary_from_state(next_state);
 
-            ParametrizedState subtracted = next_state.subtract_min_boundary(min_boundary);
-            matrix[i][j] = ULAState(find_id_of_state(states, subtracted), min_boundary);
+            ParametricState subtracted = next_state.subtract_min_boundary(min_boundary);
+            ula_states[i][j] = ULAState(find_id_of_state(states, subtracted), min_boundary);
         }
     }
 
-    this->max_i_minus_e = vector<int>(states.size(), 0);
+    this->finalities = vector<int>(states.size(), 0);
     for (int i = 0; i < states.size(); ++i) {
-        ParametrizedState& state = states[i];
+        ParametricState& state = states[i];
         if (!state.container.empty()) {
-            this->max_i_minus_e[i] = state.get_max_i_minus_e();
+            this->finalities[i] = state.get_finalities();
         }
     }
 }
 
-const vector<bit_vector_t> ULAShadow::generate_bit_vectors_from_tolerance(int n)
+ULAShadow::ULAShadow(
+    const vector<bit_vector_t>& _bit_vectors, 
+    const vector<vector<ULAState>>& _ula_states, 
+    const vector<int>& _finalities) : bit_vectors(_bit_vectors), ula_states(_ula_states), finalities(_finalities) { }
+
+const vector<bit_vector_t> ULAShadow::generate_bit_vectors_from_length(const int n)
 {
     vector<bit_vector_t> newly_generated = {bit_vector_t()};
     vector<bit_vector_t> previously_generated;
@@ -56,24 +65,24 @@ const vector<bit_vector_t> ULAShadow::generate_bit_vectors_from_tolerance(int n)
     return result;
 }
 
-int ULAShadow::min_boundary_from_state(const ParametrizedState& parametrized_state)
+int ULAShadow::min_boundary_from_state(const ParametricState& parametrized_state)
 {
     if (parametrized_state.container.empty()) {
         return 0;
     }
 
-    int min_boundary = (*(parametrized_state.container.begin())).i;
+    int min_boundary = (*(parametrized_state.container.begin())).word_idx;
 
     for (const Position& position : parametrized_state.container) {
-        if (position.i < min_boundary) {
-            min_boundary = position.i;
+        if (position.word_idx < min_boundary) {
+            min_boundary = position.word_idx;
         }
     }
 
     return min_boundary;
 }
 
-int ULAShadow::find_id_of_state(const vector<ParametrizedState>& states, const ParametrizedState& state)
+int ULAShadow::find_id_of_state(const vector<ParametricState>& states, const ParametricState& state)
 {
     if (state.container.empty()) {
         return -1;

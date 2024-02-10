@@ -1,25 +1,25 @@
 #include "Position.h"
 
-Position::Position(int _e, int _i) : e(_e), i(_i) {}
+Position::Position(int _error_idx, int _word_idx) : error_idx(_error_idx), word_idx(_word_idx) {}
 
-vector<Position> Position::step(bit_vector_t bit_vector, unsigned tolerance) const
+vector<Position> Position::step(const bit_vector_t& bit_vector, const int tolerance) const
 {
 	vector<Position> result;
 
 	if (bit_vector.size() == 0) {
-		result.push_back(Position(this->e+1, this->i));
+		result.push_back(Position(this->error_idx+1, this->word_idx));
 	}
 	else if (bit_vector.front() == 1) {
-		result.push_back(Position(this->e, this->i + 1));
+		result.push_back(Position(this->error_idx, this->word_idx + 1));
 	}
 	else {
-		result.push_back(Position(this->e + 1, this->i));
-		result.push_back(Position(this->e + 1, this->i + 1));
+		result.push_back(Position(this->error_idx + 1, this->word_idx));
+		result.push_back(Position(this->error_idx + 1, this->word_idx + 1));
 
 		for (int b = 1; b < bit_vector.size(); ++b) {
 			bool bit = bit_vector[b];
 			if (bit) {
-				result.push_back(Position(this->e + b, this->i + b + 1));
+				result.push_back(Position(this->error_idx + b, this->word_idx + b + 1));
 				break;
 			}
 		}
@@ -27,7 +27,7 @@ vector<Position> Position::step(bit_vector_t bit_vector, unsigned tolerance) con
 
 	vector<Position> filtered_result;
 	for (auto position : result) {
-		if (position.e <= tolerance) {
+		if (position.error_idx <= tolerance) {
 			filtered_result.push_back(position);
 		}
 	}
@@ -37,7 +37,7 @@ vector<Position> Position::step(bit_vector_t bit_vector, unsigned tolerance) con
 
 bool Position::operator==(const Position& other) const
 {
-	return (this->e == other.e) && (this->i == other.i);
+	return (this->error_idx == other.error_idx) && (this->word_idx == other.word_idx);
 }
 
 bool Position::operator!=(const Position& other) const
@@ -47,10 +47,10 @@ bool Position::operator!=(const Position& other) const
 
 bool Position::operator<(const Position& rhs) const
 {
-	if (this->i < rhs.i) {
+	if (this->word_idx < rhs.word_idx) {
 		return true;
 	}
-	if (this->i == rhs.i && this->e < rhs.e) {
+	if (this->word_idx == rhs.word_idx && this->error_idx < rhs.error_idx) {
 		return true;
 	}
 
@@ -61,10 +61,10 @@ bool Position::operator<(const Position& rhs) const
 
 bool Position::inverse_less_than(const Position& rhs) const
 {
-	if (this->e < rhs.e) {
+	if (this->error_idx < rhs.error_idx) {
 		return true;
 	}
-	if (this->e == rhs.e && this->i < rhs.i) {
+	if (this->error_idx == rhs.error_idx && this->word_idx < rhs.word_idx) {
 		return true;
 	}
 
@@ -73,12 +73,12 @@ bool Position::inverse_less_than(const Position& rhs) const
 
 bool Position::subsumes(const Position& other) const
 {
-	return (this->e <= other.e) && (std::abs(this->i - other.i) <= other.e - this->e);
+	return (this->error_idx <= other.error_idx) && (std::abs(this->word_idx - other.word_idx) <= other.error_idx - this->error_idx);
 }
 
 string Position::to_string() const
 {
-	return "Position(" + std::to_string(this->e) + ", " + std::to_string(this->i) + ")";
+	return "Position(" + std::to_string(this->error_idx) + ", " + std::to_string(this->word_idx) + ")";
 }
 
 ostream& operator<<(ostream& out, const Position& position)

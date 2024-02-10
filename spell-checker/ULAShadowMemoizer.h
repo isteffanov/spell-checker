@@ -10,12 +10,19 @@ private:
 	memoizer_t memoizer;
 	static ULAShadowMemoizer* singleton_instance;
 
+
 protected:
 	ULAShadowMemoizer();
 
 public:
 	ULAShadowMemoizer(ULAShadowMemoizer& other) = delete;
 	void operator==(const ULAShadowMemoizer& other) = delete;
+
+	void save(const int tolerance);
+	const ULAShadow load(const int tolerance);
+
+	static string get_filename_from_tolerance(const int tolerance);
+
 
 	static ULAShadowMemoizer* get_instance();
 

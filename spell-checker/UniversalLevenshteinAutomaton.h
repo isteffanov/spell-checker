@@ -14,14 +14,13 @@ typedef std::vector<bool> bit_vector_t;
 
 class UniversalLevenshteinAutomaton
 {
-
 	string word;
 	unsigned tolerance;
 	ULAShadow ula_shadow;
-	int i_minus_e_threshold;
+	int finality_threshold;
 
 public:
-	UniversalLevenshteinAutomaton(unsigned tolerance, const string& word, const alphabet_t& alphabet = alphabet_t());
+	UniversalLevenshteinAutomaton(const int tolerance, const string& word, const alphabet_t& alphabet = alphabet_t());
 
 	static int bit_vector_to_id(const bit_vector_t& bit_vector);
 	int transition_to_bit_vector_id(int min_boundary, char symbol) const;

@@ -1,7 +1,9 @@
 #pragma once
 #include<ostream>
+#include<fstream>
 
 using std::ostream;
+using std::ofstream;
 
 class ULAState {
 public:
@@ -14,5 +16,6 @@ public:
 
 	bool operator==(const ULAState& rhs) const;
 	friend ostream& operator<<(ostream& out, const ULAState& ula_state);
+	friend ofstream& operator<<(ofstream& out, const ULAState& ula_state);
 };
 

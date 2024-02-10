@@ -28,7 +28,7 @@ private:
 
 public:
 
-	SpellChecker(dictionary_t _dictionary, int _tolerance);
+	SpellChecker(const dictionary_t& _dictionary, const int _tolerance);
 
 	bool check_word(const string& query) const;
 	vector<string> correct_word(const string& query) const;

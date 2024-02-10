@@ -23,9 +23,9 @@ public:
 	delta_t transitions;
 	final_t final_nodes;
 
-	TrieAutomaton(dictionary_t dictionary = dictionary_t(), alphabet_t alphabet = alphabet_t());
+	TrieAutomaton(const dictionary_t& dictionary = dictionary_t(), alphabet_t alphabet = alphabet_t());
 
-	const node_t& step(const node_t node, char symbol) const;
+	const node_t& step(const node_t& node, char symbol) const;
 
 	bool contains(const string& word) const;
 	bool is_final(const node_t& node) const;
@@ -38,7 +38,7 @@ private:
 
 	void add_word(const string& word, alphabet_t& alphabet);
 	bool is_final(const node_t& node);
-	alphabet_t get_node_alphabet(const node_t& node);
-	node_t get_child_node(const node_t node, char symbol);
+	const alphabet_t get_node_alphabet(const node_t& node);
+	const node_t& get_child_node(const node_t& node, char symbol);
 
 };

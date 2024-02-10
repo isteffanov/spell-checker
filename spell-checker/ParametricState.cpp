@@ -1,34 +1,34 @@
-#include "ParametrizedState.h"
+#include "ParametricState.h"
 #include<algorithm>
 #include<cassert>
 
-ParametrizedState::ParametrizedState(const set<Position>& _positions): container(_positions){}
+ParametricState::ParametricState(const set<Position>& _positions): container(_positions){}
 
-const ParametrizedState ParametrizedState::step(bit_vector_t bit_vector, int tolerance) const
+const ParametricState ParametricState::step(const bit_vector_t& bit_vector, const int tolerance) const
 {
 	if (this->container.empty()) {
-		return ParametrizedState::empty_parametrized_state;
+		return ParametricState::empty_parametrized_state;
 	}
 
 	bit_vector_t position_bit_vector;
 	set<Position> next_positions;
-	vector<ParametrizedState> possible_transitions;
+	vector<ParametricState> possible_transitions;
 	for (const Position& position : this->container) {
 
-		position_bit_vector = bit_vector_t((position.i >= bit_vector.size() ? bit_vector.end() : bit_vector.begin() + position.i), bit_vector.end());
+		position_bit_vector = bit_vector_t((position.word_idx >= bit_vector.size() ? bit_vector.end() : bit_vector.begin() + position.word_idx), bit_vector.end());
 		next_positions.clear();
 
 		for (const Position& next_position : position.step(position_bit_vector, tolerance)) {
 			next_positions.insert(next_position);
 		}
 
-		possible_transitions.push_back(ParametrizedState(next_positions));
+		possible_transitions.push_back(ParametricState(next_positions));
 	}
 
 	return reduced_union(possible_transitions);
 }
 
-ParametrizedState ParametrizedState::reduced_union(const vector<ParametrizedState>& states)
+ParametricState ParametricState::reduced_union(const vector<ParametricState>& states)
 {
 	int i;
 	vector<int> indexes(states.size());
@@ -50,44 +50,44 @@ ParametrizedState ParametrizedState::reduced_union(const vector<ParametrizedStat
 		indexes[i] += 1;
 	}
 
-	return ParametrizedState(result_container);
+	return ParametricState(result_container);
 }
 
-int ParametrizedState::get_max_i_minus_e()
+int ParametricState::get_finalities()
 {
 	Position max_pos = *(this->container.begin());
-	int result = max_pos.i - max_pos.e;
+	int result = max_pos.word_idx - max_pos.error_idx;
 
 	for (const Position& pos : this->container) {
-		if (pos.i - pos.e > result) {
-			result = pos.i - pos.e;
+		if (pos.word_idx - pos.error_idx > result) {
+			result = pos.word_idx - pos.error_idx;
 		}
 	}
 
 	return result;
 }
 
-vector<ParametrizedState> ParametrizedState::generate_from_tolerance(const int tolerance)
+vector<ParametricState> ParametricState::generate_from_tolerance(const int tolerance)
 {
-	vector<ParametrizedState> result;
+	vector<ParametricState> result;
 
-	vector<ParametrizedState> newly_generated;
-	ParametrizedState new_positions;
+	vector<ParametricState> newly_generated;
+	ParametricState new_positions;
 
 	for (int e = 0; e < tolerance + 1; ++e) {
-		newly_generated.push_back(ParametrizedState({ Position(e, 0) }));
+		newly_generated.push_back(ParametricState({ Position(e, 0) }));
 	}
 
 	while (!newly_generated.empty()) {
 
-		for (const ParametrizedState& paramaterized_state : newly_generated) {
+		for (const ParametricState& paramaterized_state : newly_generated) {
 			result.push_back(paramaterized_state);
 		}
 
-		vector<ParametrizedState> previously_generated(newly_generated);
+		vector<ParametricState> previously_generated(newly_generated);
 		newly_generated.clear();
 
-		for (const ParametrizedState& positions : previously_generated) {
+		for (const ParametricState& positions : previously_generated) {
 			vector<Position> candidates = positions.generate_next_positions(tolerance);
 			for (const Position& c : candidates) {
 
@@ -140,17 +140,17 @@ vector<ParametrizedState> ParametrizedState::generate_from_tolerance(const int t
 	return result;
 }
 
-bool ParametrizedState::operator==(const ParametrizedState& other) const
+bool ParametricState::operator==(const ParametricState& other) const
 {
 	return this->container == other.container;
 }
 
-bool ParametrizedState::operator<(const ParametrizedState& other) const
+bool ParametricState::operator<(const ParametricState& other) const
 {
 	return false;
 }
 
-string ParametrizedState::to_string() const
+string ParametricState::to_string() const
 {
 	string result = "{ ";
 	for (const Position& pos : container) {
@@ -162,27 +162,27 @@ string ParametrizedState::to_string() const
 	return result;
 }
 
-ParametrizedState ParametrizedState::subtract_min_boundary(int min_boundary)
+ParametricState ParametricState::subtract_min_boundary(int min_boundary)
 {
-	ParametrizedState subtracted;
+	ParametricState subtracted;
 	for (const Position& position : this->container) {
-		subtracted.container.insert(Position(position.e, position.i - min_boundary));
+		subtracted.container.insert(Position(position.error_idx, position.word_idx - min_boundary));
 	}
 
 	return subtracted;
 }
 
-int ParametrizedState::get_min_boundary() const
+int ParametricState::get_min_boundary() const
 {
 	if (this->container.empty()) {
 		return 0;
 	}
 
-	int min_boundary = (*(this->container.begin())).i;
+	int min_boundary = (*(this->container.begin())).word_idx;
 
 	for (const Position& position : this->container) {
-		if (position.i < min_boundary) {
-			min_boundary = position.i;
+		if (position.word_idx < min_boundary) {
+			min_boundary = position.word_idx;
 		}
 	}
 
@@ -190,7 +190,7 @@ int ParametrizedState::get_min_boundary() const
 }
 
 
-vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
+vector<Position> ParametricState::generate_next_positions(const int tolerance) const
 {
 	assert(("Container not empty in generate_next_positions", !container.empty()));
 
@@ -209,14 +209,14 @@ vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
 
 	vector<Position> result;
 
-	int i0 = base.e + base.i;
+	int i0 = base.error_idx + base.word_idx;
 	int e0 = 0;
 
 	if (back != base) {
-		e0 = back.e + 1;
+		e0 = back.error_idx + 1;
 
-		for (int new_i = back.i + 1; new_i < i0 + back.e + 1; ++new_i) {
-			result.push_back(Position(back.e, new_i));
+		for (int new_i = back.word_idx + 1; new_i < i0 + back.error_idx + 1; ++new_i) {
+			result.push_back(Position(back.error_idx, new_i));
 		}
 	}
 
@@ -229,7 +229,7 @@ vector<Position> ParametrizedState::generate_next_positions(int tolerance) const
 	return result;
 }
 
-const Position& ParametrizedState::operator[](int index) const
+const Position& ParametricState::operator[](int index) const
 {
 	auto curr = container.begin();
 	while (index != 0) {
@@ -240,7 +240,7 @@ const Position& ParametrizedState::operator[](int index) const
 	return *curr;
 }
 
-int ParametrizedState::get_minimum_index(const vector<ParametrizedState>& states, const vector<int>& indexes)
+int ParametricState::get_minimum_index(const vector<ParametricState>& states, const vector<int>& indexes)
 {
 	vector<int> possible_results;
 	for (int i = 0; i < indexes.size(); ++i) {
@@ -264,10 +264,10 @@ int ParametrizedState::get_minimum_index(const vector<ParametrizedState>& states
 }
 
 
-ostream& operator<<(ostream& out, const ParametrizedState& parametrized_state)
+ostream& operator<<(ostream& out, const ParametricState& parametrized_state)
 {
 	out << parametrized_state.to_string() << "\n";
 	return out;
 }
 
-const std::set<Position> ParametrizedState::empty_parametrized_state = std::set<Position>();
+const std::set<Position> ParametricState::empty_parametrized_state = std::set<Position>();
