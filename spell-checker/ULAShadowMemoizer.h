@@ -2,7 +2,7 @@
 #include<unordered_map>
 #include"ULAShadow.h"
 
-typedef std::unordered_map<int, ULAShadow> memoizer_t;
+typedef std::unordered_map<int, std::unique_ptr<ULAShadow>> memoizer_t;
 
 class ULAShadowMemoizer {
 
@@ -18,8 +18,8 @@ public:
 	ULAShadowMemoizer(ULAShadowMemoizer& other) = delete;
 	void operator==(const ULAShadowMemoizer& other) = delete;
 
-	void save(const int tolerance);
-	const ULAShadow load(const int tolerance);
+	void save(const string& file_path, const int tolerance);
+	void load(std::ifstream& file, const int tolerance);
 
 	static string get_filename_from_tolerance(const int tolerance);
 
