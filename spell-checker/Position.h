@@ -12,12 +12,12 @@ typedef std::vector<bool> bit_vector_t;
 
 class Position {
 public:
-	int e;
-	int i;
+	int error_idx;
+	int word_idx;
 
-	Position(int _e, int _i);
+	Position(int _error_idx, int _word_idx);
 
-	vector<Position> step(bit_vector_t bit_vector, unsigned tolerance) const;
+	vector<Position> step(const bit_vector_t& bit_vector, const int tolerance) const;
 
 	bool operator==(const Position& other) const;
 	bool operator!=(const Position& other) const;

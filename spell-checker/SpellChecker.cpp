@@ -1,8 +1,8 @@
 #include "SpellChecker.h"
 
 SpellChecker::SpellChecker(
-	dictionary_t _dictionary, 
-	int _tolerance) : dictionary(_dictionary), tolerance(_tolerance)
+	const dictionary_t& _dictionary, 
+	const int _tolerance) : dictionary(_dictionary), tolerance(_tolerance)
 {
 	this->trie = TrieAutomaton(_dictionary);
 }

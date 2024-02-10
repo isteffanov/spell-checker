@@ -1,5 +1,5 @@
 #pragma once
-#include"ParametrizedState.h"
+#include"ParametricState.h"
 #include"ULAState.h"
 #include<vector>
 
@@ -11,14 +11,15 @@ class ULAShadow
 {
 public:
 	vector<bit_vector_t> bit_vectors;
-	vector<vector<ULAState>> matrix;
-	vector<int> max_i_minus_e;
+	vector<vector<ULAState>> ula_states;
+	vector<int> finalities;
 
-	ULAShadow(int tolerance = 0);
+	ULAShadow(const int tolerance = 0);
+	ULAShadow(const vector<bit_vector_t>& bit_vectors, const vector<vector<ULAState>>& ula_states, const vector<int>& finalities);
 
-	static const vector<bit_vector_t> generate_bit_vectors_from_tolerance(int tolerance);
-	static int min_boundary_from_state(const ParametrizedState& parametrized_state);
+	static const vector<bit_vector_t> generate_bit_vectors_from_length(const int n);
+	static int min_boundary_from_state(const ParametricState& parametrized_state);
 
-	static int find_id_of_state(const vector<ParametrizedState>& states, const ParametrizedState& state);
+	static int find_id_of_state(const vector<ParametricState>& states, const ParametricState& state);
 };
 

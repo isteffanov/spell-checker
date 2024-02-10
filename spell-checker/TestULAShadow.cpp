@@ -2,21 +2,21 @@
 #include"ULAShadow.h"
 
 TEST(GenerateBitVectors, WithTolerance0) {
-	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_tolerance(0);
+	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_length(0);
 	vector<bit_vector_t> expected = { {} };
 
 	EXPECT_EQ(result, expected);
 }
 
 TEST(GenerateBitVectors, WithTolerance1) {
-	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_tolerance(1);
+	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_length(1);
 	vector<bit_vector_t> expected = { {}, {0}, {1} };
 
 	EXPECT_EQ(result, expected);
 }
 
 TEST(GenerateBitVectors, WithTolerance2) {
-	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_tolerance(2);
+	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_length(2);
 	vector<bit_vector_t> expected = { 
 		{},
 		{0}, {1},
@@ -27,7 +27,7 @@ TEST(GenerateBitVectors, WithTolerance2) {
 }
 
 TEST(GenerateBitVectors, WithTolerance3) {
-	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_tolerance(3);
+	vector<bit_vector_t> result = ULAShadow::generate_bit_vectors_from_length(3);
 	vector<bit_vector_t> expected = {
 		{},
 		{0}, {1},
@@ -42,20 +42,20 @@ TEST(TestGenerateULAShadow, WithTolerance0) {
 
 	ULAShadow ula_shadow = ULAShadow(0);
 
-	vector<vector<ULAState>> expected_matrix = { { ULAState(-1, 0), ULAState(-1, 0), ULAState(0, 1)} };
+	vector<vector<ULAState>> expected_ula_states = { { ULAState(-1, 0), ULAState(-1, 0), ULAState(0, 1)} };
 	vector<bit_vector_t> expected_bit_vectors = { {}, {0}, {1} };
-	vector<int> expected_max_i_minus_e = { 0 };
+	vector<int> expected_finalities = { 0 };
 
-	EXPECT_EQ(ula_shadow.matrix, expected_matrix);
+	EXPECT_EQ(ula_shadow.ula_states, expected_ula_states);
 	EXPECT_EQ(ula_shadow.bit_vectors, expected_bit_vectors);
-	EXPECT_EQ(ula_shadow.max_i_minus_e, expected_max_i_minus_e);
+	EXPECT_EQ(ula_shadow.finalities, expected_finalities);
 }
 
 TEST(TestGenerateULAShadow, WithTolerance1) {
 
 	ULAShadow ula_shadow = ULAShadow(1);
 
-    vector<vector<ULAState>> expected_matrix = {
+    vector<vector<ULAState>> expected_ula_states = {
         {   ULAState(1, 0),
             ULAState(2, 0),
             ULAState(0, 1),
@@ -138,7 +138,7 @@ TEST(TestGenerateULAShadow, WithTolerance1) {
         }
     };
 
-	EXPECT_EQ(ula_shadow.matrix, expected_matrix);
+	EXPECT_EQ(ula_shadow.ula_states, expected_ula_states);
 }
 
 /*

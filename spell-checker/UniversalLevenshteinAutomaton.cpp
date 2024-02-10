@@ -2,12 +2,12 @@
 #include<cassert>
 
 UniversalLevenshteinAutomaton::UniversalLevenshteinAutomaton(
-    unsigned _tolerance, 
+    const int _tolerance, 
     const string& _word, 
     const alphabet_t& _alphabet) : tolerance(_tolerance), word(_word)
 {
     this->ula_shadow = ULAShadowMemoizer::get_instance()->get_ula_shadow_for_tolerance(_tolerance);
-    this->i_minus_e_threshold = _word.length() - _tolerance;
+    this->finality_threshold = _word.length() - _tolerance;
 }
 
 int UniversalLevenshteinAutomaton::bit_vector_to_id(const bit_vector_t& bit_vector)
@@ -50,16 +50,16 @@ int UniversalLevenshteinAutomaton::transition_to_bit_vector_id(int min_boundary,
 ULAState UniversalLevenshteinAutomaton::step(const ULAState& ula_state, char symbol) const
 {
     int bit_vector_id = transition_to_bit_vector_id(ula_state.min_boundary, symbol);
-    ULAState next_state = this->ula_shadow.matrix[ula_state.id][bit_vector_id];
+    ULAState next_state = this->ula_shadow.ula_states[ula_state.id][bit_vector_id];
     
     return ULAState(next_state.id, next_state.min_boundary + ula_state.min_boundary);
 }
 
 bool UniversalLevenshteinAutomaton::is_final(const ULAState& ula_state) const
 {
-    int i_minus_e = this->ula_shadow.max_i_minus_e[ula_state.id];
+    int finality = this->ula_shadow.finalities[ula_state.id];
 
-    return i_minus_e + ula_state.min_boundary >= this->i_minus_e_threshold;
+    return finality + ula_state.min_boundary >= this->finality_threshold;
 }
 
 const ULAState UniversalLevenshteinAutomaton::get_root() const
