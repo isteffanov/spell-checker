@@ -240,22 +240,19 @@ class SpellChecker(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self, _dictionary, _tolerance):
-        _spell_checker.SpellChecker_swiginit(self, _spell_checker.new_SpellChecker(_dictionary, _tolerance))
+    def __init__(self, _dictionary_path, _tolerance):
+        _spell_checker.SpellChecker_swiginit(self, _spell_checker.new_SpellChecker(_dictionary_path, _tolerance))
 
     def check_word(self, query):
         return _spell_checker.SpellChecker_check_word(self, query)
 
     def correct_word(self, query):
         return _spell_checker.SpellChecker_correct_word(self, query)
+
+    def load_dictionary(self, filename):
+        return _spell_checker.SpellChecker_load_dictionary(self, filename)
     __swig_destroy__ = _spell_checker.delete_SpellChecker
 
 # Register SpellChecker in _spell_checker:
 _spell_checker.SpellChecker_swigregister(SpellChecker)
-
-def load_dictionary(filename):
-    return _spell_checker.load_dictionary(filename)
-
-def main():
-    return _spell_checker.main()
 

@@ -5216,13 +5216,6 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -8200,7 +8193,7 @@ SWIGINTERN PyObject *correction_node_t_swiginit(PyObject *SWIGUNUSEDPARM(self), 
 
 SWIGINTERN PyObject *_wrap_new_SpellChecker(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
-  vector< string > arg1 ;
+  string arg1 ;
   int arg2 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -8210,10 +8203,10 @@ SWIGINTERN PyObject *_wrap_new_SpellChecker(PyObject *self, PyObject *args) {
   (void)self;
   if (!SWIG_Python_UnpackTuple(args, "new_SpellChecker", 2, 2, swig_obj)) SWIG_fail;
   {
-    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
-    int res = swig::asptr(swig_obj[0], &ptr);
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[0], &ptr);
     if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_SpellChecker" "', argument " "1"" of type '" "vector< string >""'"); 
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_SpellChecker" "', argument " "1"" of type '" "string""'"); 
     }
     arg1 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
@@ -8307,6 +8300,44 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SpellChecker_load_dictionary(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  SpellChecker *arg1 = (SpellChecker *) 0 ;
+  string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  dictionary_t result;
+  
+  (void)self;
+  if (!SWIG_Python_UnpackTuple(args, "SpellChecker_load_dictionary", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_SpellChecker, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SpellChecker_load_dictionary" "', argument " "1"" of type '" "SpellChecker *""'"); 
+  }
+  arg1 = reinterpret_cast< SpellChecker * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SpellChecker_load_dictionary" "', argument " "2"" of type '" "string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SpellChecker_load_dictionary" "', argument " "2"" of type '" "string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (arg1)->load_dictionary((string const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new dictionary_t(result)), SWIGTYPE_p_dictionary_t, SWIG_POINTER_OWN |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_delete_SpellChecker(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   SpellChecker *arg1 = (SpellChecker *) 0 ;
@@ -8340,51 +8371,6 @@ SWIGINTERN PyObject *SpellChecker_swigregister(PyObject *SWIGUNUSEDPARM(self), P
 SWIGINTERN PyObject *SpellChecker_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
-
-SWIGINTERN PyObject *_wrap_load_dictionary(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  string *arg1 = 0 ;
-  int res1 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[1] ;
-  dictionary_t result;
-  
-  (void)self;
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  {
-    std::string *ptr = (std::string *)0;
-    res1 = SWIG_AsPtr_std_string(swig_obj[0], &ptr);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "load_dictionary" "', argument " "1"" of type '" "string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "load_dictionary" "', argument " "1"" of type '" "string const &""'"); 
-    }
-    arg1 = ptr;
-  }
-  result = load_dictionary((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj((new dictionary_t(result)), SWIGTYPE_p_dictionary_t, SWIG_POINTER_OWN |  0 );
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res1)) delete arg1;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_main(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  int result;
-  
-  (void)self;
-  if (!SWIG_Python_UnpackTuple(args, "main", 0, 0, 0)) SWIG_fail;
-  result = (int)main();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
 
 static PyMethodDef SwigMethods[] = {
 	 { "delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_O, NULL},
@@ -8453,11 +8439,10 @@ static PyMethodDef SwigMethods[] = {
 	 { "new_SpellChecker", _wrap_new_SpellChecker, METH_VARARGS, NULL},
 	 { "SpellChecker_check_word", _wrap_SpellChecker_check_word, METH_VARARGS, NULL},
 	 { "SpellChecker_correct_word", _wrap_SpellChecker_correct_word, METH_VARARGS, NULL},
+	 { "SpellChecker_load_dictionary", _wrap_SpellChecker_load_dictionary, METH_VARARGS, NULL},
 	 { "delete_SpellChecker", _wrap_delete_SpellChecker, METH_O, NULL},
 	 { "SpellChecker_swigregister", SpellChecker_swigregister, METH_O, NULL},
 	 { "SpellChecker_swiginit", SpellChecker_swiginit, METH_VARARGS, NULL},
-	 { "load_dictionary", _wrap_load_dictionary, METH_O, NULL},
-	 { "main", _wrap_main, METH_NOARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
